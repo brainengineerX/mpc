@@ -65,7 +65,7 @@
 
 /* 实时 GUI 开关（gnuplot）：
  * 1=启用实时窗口；0=关闭。 */
-#define ENABLE_UI 1
+#define ENABLE_UI 0
 
 /* 实时 GUI 刷新分频（每 N 拍刷新一次窗口） */
 #define UI_REFRESH_DIV 100
