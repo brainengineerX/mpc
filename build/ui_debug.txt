@@ -1,0 +1,9 @@
+[UI] init start
+[UI] SIGPIPE ignored
+[UI] popen success, backend enabled
+[UI] init handshake flush success
+[UI] refresh ok count=10 last_step=900
+[UI] refresh ok count=20 last_step=1900
+[UI] refresh ok count=30 last_step=2900
+[UI] refresh ok count=40 last_step=3900
+[UI] refresh ok count=50 last_step=4900

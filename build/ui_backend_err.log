@@ -1,0 +1,16 @@
+qt.qpa.fonts: Populating font family aliases took 113 ms. Replace uses of missing font family "Sans" with one that exists to avoid this cost. 
+
+Could not connect to existing gnuplot_qt. Starting a new one.
+qt.qpa.fonts: Populating font family aliases took 107 ms. Replace uses of missing font family "Sans" with one that exists to avoid this cost. 
+Could not connect to existing gnuplot_qt. Starting a new one.
+qt.qpa.fonts: Populating font family aliases took 100 ms. Replace uses of missing font family "Sans" with one that exists to avoid this cost. 
+Could not connect to existing gnuplot_qt. Starting a new one.
+qt.qpa.fonts: Populating font family aliases took 105 ms. Replace uses of missing font family "Sans" with one that exists to avoid this cost. 
+Could not connect to existing gnuplot_qt. Starting a new one.
+qt.qpa.fonts: Populating font family aliases took 92 ms. Replace uses of missing font family "Sans" with one that exists to avoid this cost. 
+Could not connect to existing gnuplot_qt. Starting a new one.
+PasteBoard: Error creating pasteboard: com.apple.pasteboard.clipboard [-4960]
+PasteBoard: Error creating pasteboard: com.apple.pasteboard.find [-4960]
+2026-02-16 11:24:45.241 gnuplot_qt[36811:2396591] _LSScheduleNotificationFunction() failed on line 684 in function id scheduleApplicationNotification(LSNotificationCode, NSWorkspaceNotificationCenter *)
+no screens available, assuming 24-bit color
+Cannot create window: no screens available
