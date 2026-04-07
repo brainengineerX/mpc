@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la core/control/fixed_point*.h core/control/fixed_point*.c)",
+      "Bash(gcc -c -std=c11 -Wall -Wextra -Icore/control core/control/fixed_point_types.h -o /tmp/test_types.o)",
+      "Bash(gcc -c -std=c11 -Wall -Wextra -Icore/control -Icore/math core/math/fixed_point_math.h -o /tmp/test_math.o)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math core/math/fixed_point_math.c -o /tmp/test_math.o)",
+      "Bash(git add:*)",
+      "Bash(git commit -m 'feat: add fixed-point math library \\(Q15/Q30\\):*)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/control/fixed_point_types.h)",
+      "Bash(ls -lh /Users/lidandan/DongBin/Github/mpc_github/core/control/*.h /Users/lidandan/DongBin/Github/mpc_github/core/control/*.c)",
+      "Bash(gcc -c -std=c11 -Wall -Wextra -Icore/control -Icore/math core/control/mpc_memory_layout.h -o /tmp/test_mem.o)"
+    ]
+  }
+}
