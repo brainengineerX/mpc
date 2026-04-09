@@ -27,11 +27,11 @@ void mpc_controller_q15_init(
     const SwitchState *init_switch) {
 
     /* 复制参数 */
-    memcpy(&ctrl->motor_params, motor_params, sizeof(MotorParamsQ15));
-    memcpy(&ctrl->weights, weights, sizeof(MpcWeightsQ15));
+    ctrl->motor_params = *motor_params;
+    ctrl->weights = *weights;
 
     /* 初始化开关状态 */
-    memcpy(&ctrl->last_switch, init_switch, sizeof(SwitchState));
+    ctrl->last_switch = *init_switch;
 
     /* 初始化 Top-K 配置 */
     ctrl->topk_cfg.k_steady = MPC_TOP_K_STEADY;
@@ -84,7 +84,7 @@ void mpc_controller_q15_update_vdc(MpcControllerQ15 *ctrl, q15_t vdc) {
 static void switch_to_voltage_q15(
     const SwitchState *sw,
     q15_t vdc,
-    VoltageVectorQ15 *v_out) {
+    VoltageQ15 *v_out) {
 
     int32_t sa = sw->sa;
     int32_t sb = sw->sb;
@@ -223,7 +223,7 @@ void mpc_insert_topk_q15(
     for (i = 0; i < top_k; i++) {
         if (!topk[i].valid) {
             /* 空槽位，直接插入 */
-            memcpy(&topk[i], candidate, sizeof(MpcCandidateQ15));
+            topk[i] = *candidate;
             return;
         }
         if (topk[i].cost.j_total > worst_cost) {
@@ -234,7 +234,7 @@ void mpc_insert_topk_q15(
 
     /* 如果新候选比最差候选更好，替换它 */
     if (candidate->cost.j_total < worst_cost) {
-        memcpy(&topk[worst_idx], candidate, sizeof(MpcCandidateQ15));
+        topk[worst_idx] = *candidate;
     }
 }
 
