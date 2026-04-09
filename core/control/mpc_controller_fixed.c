@@ -281,7 +281,7 @@ void deadbeat_voltage_ref_q15(
     const CurrentStateQ15 *x,
     const CurrentRefQ15 *r,
     const MotorParamsQ15 *params,
-    VoltageVectorQ15 *v_ref) {
+    VoltageQ15 *v_ref) {
 
     /* v_alpha_ref = (i_alpha_ref - a * i_alpha) / b */
     q15_t a_i_alpha = q30_mul_q15(params->a_coeff, x->i_alpha);

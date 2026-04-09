@@ -68,11 +68,9 @@ typedef struct {
 
 /**
  * @brief 定点化电压矢量 (alpha-beta坐标系)
+ * @note 使用 motor_model_fixed.h 中的 VoltageQ15
  */
-typedef struct {
-    q15_t v_alpha;      /* alpha轴电压 (Q15) */
-    q15_t v_beta;       /* beta轴电压 (Q15) */
-} VoltageVectorQ15;
+typedef VoltageQ15 VoltageVectorQ15;
 
 /**
  * @brief 定点化代价分量

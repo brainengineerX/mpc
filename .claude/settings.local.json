@@ -27,7 +27,8 @@
       "Bash(git commit -m 'fix: resolve all compilation errors in fixed-point MPC:*)",
       "Bash(git commit -m 'fix: final compilation fixes:*)",
       "Bash(grep -n \"deadbeat_voltage_ref_q15\" /Users/lidandan/DongBin/Github/mpc_github/core/control/*.c)",
-      "Bash(git commit -m 'fix: rewrite fixed_point_math.c to resolve all compilation errors:*)"
+      "Bash(git commit -m 'fix: rewrite fixed_point_math.c to resolve all compilation errors:*)",
+      "Bash(git commit -m 'fix: remove duplicate function definitions in fixed_point_math.c:*)"
     ]
   }
 }
