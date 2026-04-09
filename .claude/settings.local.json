@@ -18,7 +18,12 @@
       "Bash(chmod +x /tmp/fix_issues.sh)",
       "Bash(/tmp/fix_issues.sh)",
       "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model -Icore/control core/math/fixed_point_math.c core/control/motor_model_fixed.c core/control/mpc_controller_fixed.c)",
-      "Bash(git commit -m 'fix: resolve compilation errors in fixed-point MPC:*)"
+      "Bash(git commit -m 'fix: resolve compilation errors in fixed-point MPC:*)",
+      "Bash(find core:*)",
+      "Bash(git checkout:*)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/math/fixed_point_math.c -o /tmp/test_math.o)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/control/motor_model_fixed.c -o /tmp/test_motor.o)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/control/mpc_controller_fixed.c -o /tmp/test_mpc.o)"
     ]
   }
 }

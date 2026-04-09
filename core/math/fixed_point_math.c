@@ -183,3 +183,37 @@ void q15_array_to_float(float *dst, const q15_t *src, int len, float scale) {
         dst[i] = (float)src[i] / scale;
     }
 }
+
+/* ============================================================================
+ * 额外函数实现（修复链接问题）
+ * ============================================================================ */
+
+q15_t q15_sub(q15_t a, q15_t b) {
+    int32_t diff = (int32_t)a - (int32_t)b;
+    /* 饱和处理 */
+    if (diff > 32767) diff = 32767;
+    if (diff < -32768) diff = -32768;
+    return (q15_t)diff;
+}
+
+q15_t q15_square_lut(q15_t x) {
+    /* 使用 q15_mul 计算平方 */
+    return q15_mul(x, x);
+}
+
+q15_t q15_div_lut(q15_t num, q15_t den) {
+    /* 简单的除法实现，避免除零 */
+    if (den == 0) {
+        return (num >= 0) ? Q15_ONE : Q15_NEG_ONE;
+    }
+
+    /* 将除法转换为乘以倒数 */
+    /* 这里使用简化的定点除法 */
+    int32_t result = ((int32_t)num << 15) / (int32_t)den;
+
+    /* 饱和处理 */
+    if (result > 32767) result = 32767;
+    if (result < -32768) result = -32768;
+
+    return (q15_t)result;
+}

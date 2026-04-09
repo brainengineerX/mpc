@@ -71,6 +71,29 @@ q15_t q15_shr(q15_t a, int shift);
  */
 q15_t q15_shl(q15_t a, int shift);
 
+/**
+ * @brief Q15 减法
+ * @param a 被减数 (Q15)
+ * @param b 减数 (Q15)
+ * @return a - b (Q15)，带饱和
+ */
+q15_t q15_sub(q15_t a, q15_t b);
+
+/**
+ * @brief Q15 平方（查表法）
+ * @param x 输入 (Q15)
+ * @return x * x (Q15)
+ */
+q15_t q15_square_lut(q15_t x);
+
+/**
+ * @brief Q15 除法（查表法）
+ * @param num 被除数 (Q15)
+ * @param den 除数 (Q15)
+ * @return num / den (Q15)
+ */
+q15_t q15_div_lut(q15_t num, q15_t den);
+
 /* ============================================================================
  * 查表法三角函数
  * ============================================================================ */
