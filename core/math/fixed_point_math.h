@@ -31,6 +31,15 @@ extern "C" {
 q15_t q15_mul(q15_t a, q15_t b);
 
 /**
+ * @brief Q30 与 Q15 乘法 (Q30 * Q15 -> Q15)
+ * @details 用于电流预测中的系数相乘: result = coeff * val >> 30
+ * @param coeff 系数 (Q30)
+ * @param val 变量值 (Q15)
+ * @return 乘积结果 (Q15): (coeff * val) >> 30
+ */
+q15_t q30_mul_q15(q30_t coeff, q15_t val);
+
+/**
  * @brief Q30 与 Q15 乘法累加 (Q30 * Q15 -> Q15)
  * @details 用于电流预测: i_next = a*i + b*v，其中 a,b 是 Q30，i,v 是 Q15
  * @param acc 累加器初始值 (Q15)

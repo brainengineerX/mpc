@@ -177,9 +177,9 @@ q15_t q15_sub(q15_t a, q15_t b) {
     return (q15_t)diff;
 }
 
-q15_t q30_mul_q15(q30_t a, q15_t b) {
+q15_t q30_mul_q15(q30_t coeff, q15_t val) {
     /* Q30 * Q15 -> Q15 */
-    int64_t product = (int64_t)a * (int64_t)b;
+    int64_t product = (int64_t)coeff * (int64_t)val;
     /* 右移 30 位 */
     product = (product + (1LL << 29)) >> 30;
     /* 饱和处理 */

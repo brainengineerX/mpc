@@ -25,7 +25,8 @@
       "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/control/motor_model_fixed.c -o /tmp/test_motor.o)",
       "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/control/mpc_controller_fixed.c -o /tmp/test_mpc.o)",
       "Bash(git commit -m 'fix: resolve all compilation errors in fixed-point MPC:*)",
-      "Bash(git commit -m 'fix: final compilation fixes:*)"
+      "Bash(git commit -m 'fix: final compilation fixes:*)",
+      "Bash(grep -n \"deadbeat_voltage_ref_q15\" /Users/lidandan/DongBin/Github/mpc_github/core/control/*.c)"
     ]
   }
 }
