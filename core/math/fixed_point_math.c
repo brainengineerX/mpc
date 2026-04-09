@@ -4,7 +4,7 @@
  */
 
 #include "fixed_point_math.h"
-#include <math.h>
+#include <string.h>
 
 /* ============================================================================
  * 三角函数查表 (256 点)
@@ -15,7 +15,7 @@
 
 /* sin 查表: 256 点覆盖 [0, 2*pi)，每步 2*pi/256 = pi/128 */
 static q15_t sin_lut[TRIG_LUT_SIZE];
-static bool trig_lut_initialized = false;
+static int trig_lut_initialized = 0;
 
 /**
  * @brief 初始化三角函数查表
@@ -36,7 +36,7 @@ void q15_trig_lut_init(void) {
         sin_lut[i] = (q15_t)q_val;
     }
 
-    trig_lut_initialized = true;
+    trig_lut_initialized = 1;
 }
 
 /**
@@ -72,13 +72,11 @@ q15_t q15_sin_lut(q15_t theta) {
 /**
  * @brief 查表法 cos 函数
  * @details cos(theta) = sin(theta + pi/2)
- *          pi/2 对应 32768/2 = 16384 (Q15 中 pi = 32768)
  */
 q15_t q15_cos_lut(q15_t theta) {
     /* cos(theta) = sin(theta + pi/2) */
-    /* pi/2 在 Q15 表示为 16384 (32768/2) */
-    q15_t theta_shifted = theta + 16384;
-    return q15_sin_lut(theta_shifted);
+    /* pi/2 在 Q15 中是 0.5，即 16384 */
+    return q15_sin_lut(theta + 16384);
 }
 
 /* ============================================================================
@@ -87,7 +85,6 @@ q15_t q15_cos_lut(q15_t theta) {
 
 /**
  * @brief Q15 乘法 (Q15 * Q15 -> Q15)
- * @details (a * b) >> 15，使用 32 位中间结果防止溢出
  */
 q15_t q15_mul(q15_t a, q15_t b) {
     int32_t temp = (int32_t)a * (int32_t)b;
@@ -101,24 +98,29 @@ q15_t q15_mul(q15_t a, q15_t b) {
 
 /**
  * @brief Q30 与 Q15 乘法累加 (Q30 * Q15 -> Q15)
- * @details acc + (coeff * val >> 30)
- *          用于电流预测: i_next = a*i + b*v
  */
 q15_t q30_mac_q15(q15_t acc, q30_t coeff, q15_t val) {
-    /* coeff (Q30) * val (Q15) = 结果 (Q45) */
     int64_t product = (int64_t)coeff * (int64_t)val;
-    /* 右移 30 位得到 Q15 */
     product = (product + (1LL << 29)) >> 30;
-    /* 加上累加器 */
-    int32_t result = (int32_t)acc + (int32_t)product;
-    /* 饱和处理 */
-    if (result > 32767) result = 32767;
-    if (result < -32768) result = -32768;
-    return (q15_t)result;
+    int32_t sum = (int32_t)acc + (int32_t)product;
+    if (sum > 32767) sum = 32767;
+    if (sum < -32768) sum = -32768;
+    return (q15_t)sum;
 }
 
 /**
- * @brief Q15 饱和加法
+ * @brief Q30 与 Q15 乘法 (Q30 * Q15 -> Q15)
+ */
+q15_t q30_mul_q15(q30_t coeff, q15_t val) {
+    int64_t product = (int64_t)coeff * (int64_t)val;
+    product = (product + (1LL << 29)) >> 30;
+    if (product > 32767) product = 32767;
+    if (product < -32768) product = -32768;
+    return (q15_t)product;
+}
+
+/**
+ * @brief Q15 加法
  */
 q15_t q15_add(q15_t a, q15_t b) {
     int32_t sum = (int32_t)a + (int32_t)b;
@@ -128,85 +130,43 @@ q15_t q15_add(q15_t a, q15_t b) {
 }
 
 /**
+ * @brief Q15 减法
+ */
+q15_t q15_sub(q15_t a, q15_t b) {
+    int32_t diff = (int32_t)a - (int32_t)b;
+    if (diff > 32767) diff = 32767;
+    if (diff < -32768) diff = -32768;
+    return (q15_t)diff;
+}
+
+/**
  * @brief Q15 取反
  */
 q15_t q15_neg(q15_t a) {
     if (a == -32768) {
-        /* -(-32768) 会溢出，饱和到 32767 */
         return 32767;
     }
     return -a;
 }
 
 /**
- * @brief Q15 算术右移
+ * @brief Q15 平方
  */
-q15_t q15_shr(q15_t a, int shift) {
-    if (shift <= 0) {
-        return a;
-    }
-    if (shift >= 15) {
-        return (a < 0) ? -1 : 0;
-    }
-    return a >> shift;
-}
-
-/**
- * @brief Q15 左移
- */
-q15_t q15_shl(q15_t a, int shift) {
-    if (shift <= 0) {
-        return a;
-    }
-    int32_t result = (int32_t)a << shift;
-    /* 饱和处理 */
-    if (result > 32767) result = 32767;
-    if (result < -32768) result = -32768;
-    return (q15_t)result;
-}
-
-/* ============================================================================
- * 额外函数实现（修复链接问题）
- * ============================================================================ */
-
-q15_t q15_sub(q15_t a, q15_t b) {
-    int32_t diff = (int32_t)a - (int32_t)b;
-    /* 饱和处理 */
-    if (diff > 32767) diff = 32767;
-    if (diff < -32768) diff = -32768;
-    return (q15_t)diff;
-}
-
-q15_t q30_mul_q15(q30_t coeff, q15_t val) {
-    /* Q30 * Q15 -> Q15 */
-    int64_t product = (int64_t)coeff * (int64_t)val;
-    /* 右移 30 位 */
-    product = (product + (1LL << 29)) >> 30;
-    /* 饱和处理 */
-    if (product > 32767) product = 32767;
-    if (product < -32768) product = -32768;
-    return (q15_t)product;
-}
-
 q15_t q15_square_lut(q15_t x) {
-    /* 使用 q15_mul 计算平方 */
     return q15_mul(x, x);
 }
 
+/**
+ * @brief Q15 除法
+ */
 q15_t q15_div_lut(q15_t num, q15_t den) {
-    /* 简化的除法实现 */
-    /* 实际项目中应该使用 Newton-Raphson 迭代或查表 */
-
-    /* 处理特殊情况 */
     if (den == 0) {
         return (num >= 0) ? Q15_ONE : Q15_NEG_ONE;
     }
-
-    /* 使用整数除法的近似 */
-    /* num / den in Q15 = (num * 2^15) / den */
     int32_t result = ((int32_t)num << 15) / (int32_t)den;
-
-    return Q15_SATURATE(result);
+    if (result > 32767) result = 32767;
+    if (result < -32768) result = -32768;
+    return (q15_t)result;
 }
 
 /* ============================================================================
@@ -226,38 +186,4 @@ void q15_array_to_float(float *dst, const q15_t *src, int len, float scale) {
     for (int i = 0; i < len; i++) {
         dst[i] = (float)src[i] / scale;
     }
-}
-
-/* ============================================================================
- * 额外函数实现（修复链接问题）
- * ============================================================================ */
-
-q15_t q15_sub(q15_t a, q15_t b) {
-    int32_t diff = (int32_t)a - (int32_t)b;
-    /* 饱和处理 */
-    if (diff > 32767) diff = 32767;
-    if (diff < -32768) diff = -32768;
-    return (q15_t)diff;
-}
-
-q15_t q15_square_lut(q15_t x) {
-    /* 使用 q15_mul 计算平方 */
-    return q15_mul(x, x);
-}
-
-q15_t q15_div_lut(q15_t num, q15_t den) {
-    /* 简单的除法实现，避免除零 */
-    if (den == 0) {
-        return (num >= 0) ? Q15_ONE : Q15_NEG_ONE;
-    }
-
-    /* 将除法转换为乘以倒数 */
-    /* 这里使用简化的定点除法 */
-    int32_t result = ((int32_t)num << 15) / (int32_t)den;
-
-    /* 饱和处理 */
-    if (result > 32767) result = 32767;
-    if (result < -32768) result = -32768;
-
-    return (q15_t)result;
 }
