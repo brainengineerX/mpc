@@ -151,10 +151,60 @@ q15_t q15_neg(q15_t a) {
 }
 
 /**
+ * @brief Q15 右移（算术右移）
+ * @param a 输入 (Q15)
+ * @param shift 右移位数
+ * @return a >> shift (Q15)
+ */
+q15_t q15_shr(q15_t a, int shift) {
+    if (shift <= 0) {
+        return a;
+    }
+    if (shift >= 15) {
+        return (a < 0) ? -1 : 0;
+    }
+    return a >> shift;
+}
+
+/**
+ * @brief Q15 左移
+ * @param a 输入 (Q15)
+ * @param shift 左移位数
+ * @return a << shift (Q15)，溢出部分截断
+ */
+q15_t q15_shl(q15_t a, int shift) {
+    if (shift <= 0) {
+        return a;
+    }
+    if (shift >= 15) {
+        return 0;
+    }
+    int32_t result = ((int32_t)a) << shift;
+    if (result > 32767) result = 32767;
+    if (result < -32768) result = -32768;
+    return (q15_t)result;
+}
+
+/**
  * @brief Q15 平方
  */
 q15_t q15_square_lut(q15_t x) {
     return q15_mul(x, x);
+}
+
+/**
+ * @brief Q15 二维向量点积
+ * @details 计算两个二维向量的点积: a1*b1 + a2*b2
+ * @param a1 向量A的第一个分量 (Q15)
+ * @param a2 向量A的第二个分量 (Q15)
+ * @param b1 向量B的第一个分量 (Q15)
+ * @param b2 向量B的第二个分量 (Q15)
+ * @return 点积结果 (Q15)
+ */
+q15_t q15_dot2(q15_t a1, q15_t a2, q15_t b1, q15_t b2) {
+    q15_t prod1 = q15_mul(a1, b1);
+    q15_t prod2 = q15_mul(a2, b2);
+    return q15_add(prod1, prod2);
 }
 
 /**
@@ -169,14 +219,6 @@ q15_t q15_div_lut(q15_t num, q15_t den) {
     if (result < -32768) result = -32768;
     return (q15_t)result;
 }
-
-/* ============================================================================
- * 数组转换函数
- * ============================================================================ */
-
-void float_array_to_q15(q15_t *dst, const float *src, int len, float scale) {
-    for (int i = 0; i < len; i++) {
-        float val = src[i] * scale;
 
 /* ============================================================================
  * 数组转换函数
