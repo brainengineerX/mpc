@@ -272,42 +272,7 @@ static int8_t select_topk_q15(
  * 死区补偿参考电压计算
  * ============================================================================ */
 
-/**
- * @brief 死区补偿参考电压计算 (定点化)
- *
- * 公式: v_ref = (i_ref - a * i) / b
- */
-void deadbeat_voltage_ref_q15(
-    const CurrentStateQ15 *x,
-    const CurrentRefQ15 *r,
-    const MotorParamsQ15 *params,
-    VoltageQ15 *v_ref) {
-
-    /* v_alpha_ref = (i_alpha_ref - a * i_alpha) / b */
-    q15_t a_i_alpha = q30_mul_q15(params->a_coeff, x->i_alpha);
-    q15_t num_alpha = q15_sub(r->i_alpha_ref, a_i_alpha);
-
-    /* 除以 b: 乘以 b 的倒数近似 */
-    /* 实际应用中，b 通常在 (0, 1) 范围内 */
-    /* 这里使用简化的除法实现 */
-    if (params->b_coeff != 0) {
-        /* 近似: v_ref ≈ num * (1/b) * scale */
-        /* 更精确的做法是使用牛顿迭代求 1/b */
-        v_ref->v_alpha = q15_div_lut(num_alpha, FLOAT_TO_Q15(Q30_TO_FLOAT(params->b_coeff)));
-    } else {
-        v_ref->v_alpha = 0;
-    }
-
-    /* v_beta_ref 同理 */
-    q15_t a_i_beta = q30_mul_q15(params->a_coeff, x->i_beta);
-    q15_t num_beta = q15_sub(r->i_beta_ref, a_i_beta);
-
-    if (params->b_coeff != 0) {
-        v_ref->v_beta = q15_div_lut(num_beta, FLOAT_TO_Q15(Q30_TO_FLOAT(params->b_coeff)));
-    } else {
-        v_ref->v_beta = 0;
-    }
-}
+/* deadbeat_voltage_ref_q15 函数已在 motor_model_fixed.c 中定义 */
 
 /* ============================================================================
  * MPC 单步控制

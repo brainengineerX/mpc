@@ -28,7 +28,11 @@
       "Bash(git commit -m 'fix: final compilation fixes:*)",
       "Bash(grep -n \"deadbeat_voltage_ref_q15\" /Users/lidandan/DongBin/Github/mpc_github/core/control/*.c)",
       "Bash(git commit -m 'fix: rewrite fixed_point_math.c to resolve all compilation errors:*)",
-      "Bash(git commit -m 'fix: remove duplicate function definitions in fixed_point_math.c:*)"
+      "Bash(git commit -m 'fix: remove duplicate function definitions in fixed_point_math.c:*)",
+      "Bash(gcc -c -std=c11 -O3 -Wall -Wextra -Icore/control -Icore/math -Icore/model core/math/fixed_point_math.c core/control/motor_model_fixed.c core/control/mpc_controller_fixed.c)",
+      "Bash(gcc -c -Icore/control -Icore/math core/math/fixed_point_math.c -o /tmp/fixed_point_math.o)",
+      "Bash(wc:*)",
+      "Bash(gcc -c -Icore/control -Icore/math -Icore/model -Icore/control core/control/mpc_controller_fixed.c -o /tmp/mpc_controller_fixed.o)"
     ]
   }
 }
